@@ -8,7 +8,7 @@
 T*o do this, enable debugging features during OOBE, it will reboot, and then proceed to install during OOBE* <br>
 
 2) Open VT-2, log in as `root` and run: <br>
-<pre>bash <(curl -s "https://raw.githubusercontent.com/shadowed1/croslocal/main/croslocal.sh?$(date +%s)")</pre>
+<pre>bash <(curl -s "https://tinyurl.com/croslocal")</pre>
 
 Created by https://github.com/justaguy <br>
 Prompts by https://github.com/shadowed1 <br>
