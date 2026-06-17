@@ -260,9 +260,8 @@ P=""
 unset password1 password2 P
 
 echo
-echo "${GREEN}${BOLD}Success! Restarting Session... "
+echo "${GREEN}${BOLD}Success! Restarting Session... ${RESET}"
 echo
-sleep 1
 
 dbus-send \
   --system \
