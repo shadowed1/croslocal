@@ -39,12 +39,12 @@ while true; do
             ;;
     esac
 done
+
 dev_install --only_bootstrap
 U='username@mustbeinthisformat'
 P='password'
 N='display name'
 G='NameOnlyOneWord'
-H="$(cryptohome --action=obfuscate_user --user="$U" 2>/dev/null | tail -1)"
 PY="$(command -v python3 || command -v python)"\
 
 echo
@@ -61,14 +61,17 @@ while true; do
     fi
 
     if [[ ! "$U" == *"@"* ]]; then
-        echo "${RED}Error: Username must be in the format 'username@domain'${RESET}8"
+        echo "${RED}Error: Username must be in the format 'username@domain'${RESET}"
         continue
     fi
 
     echo "${CYAN}You entered: ${BOLD}$U${RESET}"
     read -rp "${YELLOW}${BOLD}Confirm this username? (Y/n): ${RESET}" confirm
     case "$confirm" in
-        [Yy]* | "") break ;;
+        [Yy]* | "") 
+            H="$(cryptohome --action=obfuscate_user --user="$U" 2>/dev/null | tail -1)"
+            break 
+            ;;
         [Nn]*) echo "${BLUE}Updating...${RESET}" ;;
         *) echo "${RED}Please answer Y/n.${RESET}" ;;
     esac
