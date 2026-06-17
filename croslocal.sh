@@ -40,10 +40,85 @@ U='username@mustbeinthisformat'
 P='password'
 N='display name'
 G='NameOnlyOneWord'
-L='gaia' # DONT CHANGE PLZZZZ
 H="$(cryptohome --action=obfuscate_user --user="$U" 2>/dev/null | tail -1)"
 PY="$(command -v python3 || command -v python)"\
-CH="$(
+
+########################
+L='gaia' # DO NOT CHANGE
+########################
+
+while true; do
+    read -rp "${GREEN}Enter Username (${CYAN}username@format${RESET}) - ${RESET}${GREEN}${BOLD}Default: $U:${RESET} " choice
+    if [ -n "$choice" ]; then
+        U="${choice}"
+    fi
+
+    if [[ ! "$U" == *"@"* ]]; then
+        echo "${RED}Error: Username must be in the format 'username@domain'${RESET}8"
+        continue
+    fi
+
+    echo "${CYAN}You entered: ${BOLD}$U${RESET}"
+    read -rp "${YELLOW}${BOLD}Confirm this username? (Y/n): ${RESET}" confirm
+    case "$confirm" in
+        [Yy]* | "") break ;;
+        [Nn]*) echo "${BLUE}Updating...${RESET}" ;;
+        *) echo "${RED}Please answer Y/n.${RESET}" ;;
+    esac
+done
+
+while true; do
+    read -sp "${GREEN}Enter Password - ${RESET}${GREEN}:${RESET} " choice
+    echo ""
+    if [ -n "$choice" ]; then
+        P="${choice}"
+    fi
+
+    echo "${CYAN}Password has been set.${RESET}" 
+    read -rp "${YELLOW}${BOLD}Confirm password is correct? (Y/n): ${RESET}" confirm
+    case "$confirm" in
+        [Yy]* | "") break ;;
+        [Nn]*) echo "${BLUE}Retrying${RESET}" ;;
+        *) echo "${RED}Please answer Y/n.${RESET}" ;;
+    esac
+done
+
+while true; do
+    read -rp "${GREEN}Enter Display Name - ${RESET}${GREEN}${BOLD}Default: $N:${RESET} " choice
+    if [ -n "$choice" ]; then
+        N="${choice}"
+    fi
+
+    echo "${CYAN}You entered: ${BOLD}$N${RESET}"
+    read -rp "${YELLOW}${BOLD}Confirm this display name? (Y/n): ${RESET}" confirm
+    case "$confirm" in
+        [Yy]* | "") break ;;
+        [Nn]*) echo "${BLUE}Updating${RESET}" ;;
+        *) echo "${RED}Please answer Y/n.${RESET}" ;;
+    esac
+done
+
+while true; do
+    read -rp "${GREEN}Enter Given Name (${CYAN}One word only${RESET}) - ${RESET}${GREEN}${BOLD}Default: $G:${RESET} " choice
+    if [ -n "$choice" ]; then
+        G="${choice}"
+    fi
+
+    if [[ "$G" == *" "* ]]; the
+        echo "${RED}Error: Given Name must be only one word (no spaces).${RESET}"
+        continue
+    fi
+
+    echo "${CYAN}You entered: ${BOLD}$G${RESET}"
+    read -rp "${YELLOW}${BOLD}Confirm this given name? (Y/n): ${RESET}" confirm
+    case "$confirm" in
+        [Yy]* | "") break ;;
+        [Nn]*) echo "${BLUE}Updating${RESET}" ;;
+        *) echo "${RED}Please answer Y/n.${RESET}" ;;
+    esac
+done
+
+echo "${GREEN}${BOLD}Proceeding with install${RESET}"
 
 [ -n "$PY" ] || {
   echo "${RED}no python found${RESET}${BOLD} :( ${RESET}"
