@@ -23,6 +23,7 @@ while true; do
     read -rp "${YELLOW}${BOLD}Proceed with Local Account creation?${RESET}${BOLD} (Y/n): ${RESET}" confirm
     case "$confirm" in
         [Yy]* | "")
+            echo
             break
             ;;
         [Nn]*)
@@ -51,6 +52,7 @@ while true; do
     read -rp "${GREEN}Enter Username (${CYAN}username@format${RESET}) - ${RESET}${GREEN}${BOLD}Default: $U:${RESET} " choice
     if [ -n "$choice" ]; then
         U="${choice}"
+        echo
     fi
 
     if [[ ! "$U" == *"@"* ]]; then
@@ -68,14 +70,27 @@ while true; do
 done
 
 while true; do
-    read -sp "${GREEN}Enter Password - ${RESET}${GREEN}:${RESET} " choice
-    echo ""
-    if [ -n "$choice" ]; then
-        P="${choice}"
+    read -sp "${GREEN}Enter Password:${RESET} " password1
+    echo
+
+    read -sp "${GREEN}Confirm Password:${RESET} " password2
+    echo
+
+    if [ -z "$password1" ]; then
+        echo "${RED}Password cannot be empty.${RESET}"
+        continue
     fi
 
-    echo "${CYAN}Password has been set.${RESET}" 
+    if [ "$password1" != "$password2" ]; then
+        echo "${RED}Passwords do not match. Please try again.${RESET}"
+        continue
+    fi
+
+    P="$password1"
+
+    echo "${CYAN}Password has been set.${RESET}"
     read -rp "${YELLOW}${BOLD}Confirm password is correct? (Y/n): ${RESET}" confirm
+
     case "$confirm" in
         [Yy]* | "") break ;;
         [Nn]*) echo "${BLUE}Retrying${RESET}" ;;
@@ -87,6 +102,7 @@ while true; do
     read -rp "${GREEN}Enter Display Name - ${RESET}${GREEN}${BOLD}Default: $N:${RESET} " choice
     if [ -n "$choice" ]; then
         N="${choice}"
+        echo
     fi
 
     echo "${CYAN}You entered: ${BOLD}$N${RESET}"
@@ -102,10 +118,11 @@ while true; do
     read -rp "${GREEN}Enter Given Name (${CYAN}One word only${RESET}) - ${RESET}${GREEN}${BOLD}Default: $G:${RESET} " choice
     if [ -n "$choice" ]; then
         G="${choice}"
+        echo
     fi
 
-    if [[ "$G" == *" "* ]]; the
-        echo "${RED}Error: Given Name must be only one word (no spaces).${RESET}"
+    if [[ "$G" == *" "* ]]; then
+        echo "${RED}Error: Given Name must be only one word (no spaces). ${RESET}"
         continue
     fi
 
