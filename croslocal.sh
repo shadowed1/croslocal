@@ -169,7 +169,7 @@ while true; do
     esac
 done
 
-echo "${GREEN}${BOLD}Proceeding with install${RESET}"
+echo "${GREEN}${BOLD}Proceeding with install${RESET}${BLUE}"
 cp -a "/home/chronos/Local State" "/home/chronos/Local State.bak.localacct"
 
 if ! cryptohome --action=is_mounted --user="$U" | grep -q true; then
