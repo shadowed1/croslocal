@@ -11,5 +11,15 @@ T*o do this, enable debugging features during OOBE, it will reboot, and then pro
 <pre>curl -s "https://raw.githubusercontent.com/shadowed1/croslocal/main/croslocal.sh" | bash
 </pre>
 
+<br>
+
+```
+curl -fsSL "https://raw.githubusercontent.com/shadowed1/croslocal/main/croslocal.sh" -o "/usr/local/croslocal"
+cd /usr/local
+chmod +x croslocal
+./croslocal
+```
+<br>
+
 Created by https://github.com/justaguy <br>
 Prompts by https://github.com/shadowed1 <br>
