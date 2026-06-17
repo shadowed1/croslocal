@@ -1,6 +1,6 @@
 #/bin/bash
 # Created by https://github.com/justaguy
-# Edited by https://github.com/shadowed1
+# Prompt by https://github.com/shadowed1
 
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
