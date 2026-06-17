@@ -63,6 +63,16 @@ if [ ! -f /usr/sbin/cryptohome ]; then
   dev_install --only_bootstrap
 fi
 
+PY="$(command -v python3 || command -v python)"
+
+if [ -z "$PY" ]; then
+    if [ -x /usr/local/bin/python3 ]; then
+        PY=/usr/local/bin/python3
+    elif [ -x /usr/local/bin/python ]; then
+        PY=/usr/local/bin/python
+    fi
+fi
+
 while true; do
     read -rp "${GREEN}Enter Username (${CYAN}username@format${RESET}) - ${RESET}${GREEN}${BOLD}Default: $U:${RESET} " choice
     if [ -n "$choice" ]; then
