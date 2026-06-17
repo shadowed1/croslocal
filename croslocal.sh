@@ -267,7 +267,7 @@ dbus-send \
   array:string:
 
 echo "${RESET}"
-echo "${GREEN}${BOLD}Success! Leave VT-2 and return to ChromeOS! ${RESET}"
+echo "${GREEN}${BOLD}Success! ${RESET}${BOLD}${CYAN}Leave VT-2 and return to ChromeOS! ${RESET}"
 echo
 
 # Drop passwords from env
