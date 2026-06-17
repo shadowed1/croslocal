@@ -43,7 +43,6 @@ while true; do
     esac
 done
 
-dev_install --only_bootstrap
 U='username@mustbeinthisformat'
 P='password'
 N='display name'
@@ -55,6 +54,14 @@ echo
 L='gaia' # DO NOT CHANGE
 ########################
 echo
+
+[ -n "$PY" ] || {
+  dev_install --only_bootstrap
+}
+
+if [ ! -f /usr/sbin/cryptohome ]; then
+  dev_install --only_bootstrap
+fi
 
 while true; do
     read -rp "${GREEN}Enter Username (${CYAN}username@format${RESET}) - ${RESET}${GREEN}${BOLD}Default: $U:${RESET} " choice
@@ -149,20 +156,6 @@ while true; do
 done
 
 echo "${GREEN}${BOLD}Proceeding with install${RESET}"
-
-[ -n "$PY" ] || {
-  echo "${YELLOW}run: dev_install --only_bootstrap ${RESET}"
-  sleep 5
-  exit 1
-}
-
-if [ ! -f /usr/sbin/cryptohome ]; then
-  echo "${RED}no cryptohome found${RESET}${BOLD} :( ${RESET}"
-  echo "${YELLOW}run: dev_install --only_bootstrap ${RESET}"
-  sleep 5
-  exit 1
-fi
-
 cp -a "/home/chronos/Local State" "/home/chronos/Local State.bak.localacct"
 
 if ! cryptohome --action=is_mounted --user="$U" | grep -q true; then
