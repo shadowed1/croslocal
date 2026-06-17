@@ -16,8 +16,11 @@ if [ "$(whoami)" != "root" ]; then
     sleep 3
     exit 0
 fi
+echo
 echo "${BLUE}${BOLD}This script will enable Guest Login for ChromeOS.${RESET}${BOLD}"
+echo
 echo "${BLUE}Please enable Debugging Features during setup if you want the local account to be the owner! ${RESET}"
+echo
 
 while true; do
     read -rp "${YELLOW}${BOLD}Proceed with Local Account creation?${RESET}${BOLD} (Y/n): ${RESET}" confirm
@@ -36,7 +39,6 @@ while true; do
             ;;
     esac
 done
-# Assumed for fresh installs
 dev_install --only_bootstrap
 U='username@mustbeinthisformat'
 P='password'
@@ -45,9 +47,11 @@ G='NameOnlyOneWord'
 H="$(cryptohome --action=obfuscate_user --user="$U" 2>/dev/null | tail -1)"
 PY="$(command -v python3 || command -v python)"\
 
+echo
 ########################
 L='gaia' # DO NOT CHANGE
 ########################
+echo
 
 while true; do
     read -rp "${GREEN}Enter Username (${CYAN}username@format${RESET}) - ${RESET}${GREEN}${BOLD}Default: $U:${RESET} " choice
@@ -70,6 +74,8 @@ while true; do
     esac
 done
 
+echo
+
 while true; do
     read -sp "${GREEN}Enter Password:${RESET} " password1
     echo
@@ -88,7 +94,7 @@ while true; do
     fi
 
     P="$password1"
-
+    echo
     echo "${CYAN}Password has been set.${RESET}"
     read -rp "${YELLOW}${BOLD}Confirm password is correct? (Y/n): ${RESET}" confirm
 
