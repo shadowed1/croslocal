@@ -43,6 +43,8 @@ while true; do
     esac
 done
 
+echo
+
 U='username@mustbeinthisformat'
 P='password'
 N='display name'
@@ -275,6 +277,7 @@ dbus-send \
   array:string:"--login-user=$U","--login-profile=$H","--oobe-skip-postlogin","--disable-gaia-services","--skip-force-online-signin-for-testing","--allow-failed-policy-fetch-for-test" \
   array:string:
 
+echo
 echo "${RESET}"
 echo "${GREEN}${BOLD}Success! ${RESET}${BOLD}${CYAN}Leave VT-2 and return to ChromeOS! ${RESET}"
 echo
