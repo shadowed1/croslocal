@@ -90,10 +90,12 @@ done
 echo
 
 while true; do
-    read -sp "${GREEN}Enter Password:${RESET} " password1
+    echo -n "${GREEN}Enter Password:${RESET} "
+    read -rs password1
     echo
-
-    read -sp "${GREEN}Confirm Password:${RESET} " password2
+    
+    echo -n "${GREEN}Confirm Password:${RESET} "
+    read -rs password2
     echo
 
     if [ -z "$password1" ]; then
