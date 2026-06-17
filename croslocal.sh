@@ -254,16 +254,7 @@ do
   grep -qx -- "$f" /etc/chrome_dev.conf 2>/dev/null || echo "$f" >>/etc/chrome_dev.conf
 done
 
-# Drop passwords from env
-
-password1=""
-password2=""
-P=""
-unset password1 password2 P
-
-echo
-echo "${GREEN}${BOLD}Success! Leave VT-2 and return to ChromeOS! ${RESET}"
-echo
+echo "${RESET}${MAGENTA}"
 
 dbus-send \
   --system \
@@ -274,3 +265,13 @@ dbus-send \
   boolean:true \
   array:string:"--login-user=$U","--login-profile=$H","--oobe-skip-postlogin","--disable-gaia-services","--skip-force-online-signin-for-testing","--allow-failed-policy-fetch-for-test" \
   array:string:
+
+echo "${RESET}"
+echo "${GREEN}${BOLD}Success! Leave VT-2 and return to ChromeOS! ${RESET}"
+echo
+
+# Drop passwords from env
+password1=""
+password2=""
+P=""
+unset password1 password2 P
