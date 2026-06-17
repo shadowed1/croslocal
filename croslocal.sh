@@ -15,7 +15,9 @@ if [ "$(whoami)" != "root" ]; then
     echo "${YELLOW}Please log into VT-2 as ${RESET}${RED}${BOLD}root${RESET}${YELLOW} for this script.${RESET}"
     sleep 3
     exit 0
-fi
+
+exec < /dev/tty 
+
 echo
 echo "${BLUE}${BOLD}This script will enable Guest Login for ChromeOS.${RESET}${BOLD}"
 echo
