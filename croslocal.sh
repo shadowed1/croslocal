@@ -46,11 +46,17 @@ PY="$(command -v python3 || command -v python)"\
 CH="$(
 
 [ -n "$PY" ] || {
-  dev_install --only_bootstrap
+  echo "${RED}no python found${RESET}${BOLD} :( ${RESET}"
+  echo "${YELLOW}run: dev_install --only_bootstrap ${RESET}"
+  sleep 5
+  exit 1
 }
 
 if [ ! -f /usr/sbin/cryptohome ]; then
-    dev_install --only_bootstrap
+  echo "${RED}no cryptohome found${RESET}${BOLD} :( ${RESET}"
+  echo "${YELLOW}run: dev_install --only_bootstrap ${RESET}"
+  sleep 5
+  exit 1
 fi
 
 cp -a "/home/chronos/Local State" "/home/chronos/Local State.bak.localacct"
