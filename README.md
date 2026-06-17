@@ -1,5 +1,6 @@
-### How to Install for ChromeOS:
+## Persistent Local Account for ChromeOS!
 
+### How to Install for ChromeOS:
 
 1) Enable Developer Mode <br>
 
@@ -8,3 +9,6 @@ T*o do this, enable debugging features during OOBE, it will reboot, and then pro
 
 2) Open VT-2, log in as `root` and run: <br>
 <pre>bash <(curl -s "https://raw.githubusercontent.com/shadowed1/croslocal/main/croslocal.sh?$(date +%s)")</pre>
+
+Created by https://github.com/justaguy
+Prompts by https://github.com/shadowed1
