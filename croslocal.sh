@@ -36,7 +36,8 @@ while true; do
             ;;
     esac
 done
-
+# Assumed for fresh installs
+dev_install --only_bootstrap
 U='username@mustbeinthisformat'
 P='password'
 N='display name'
@@ -138,7 +139,6 @@ done
 echo "${GREEN}${BOLD}Proceeding with install${RESET}"
 
 [ -n "$PY" ] || {
-  echo "${RED}no python found${RESET}${BOLD} :( ${RESET}"
   echo "${YELLOW}run: dev_install --only_bootstrap ${RESET}"
   sleep 5
   exit 1
