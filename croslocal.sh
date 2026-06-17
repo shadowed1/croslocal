@@ -89,39 +89,38 @@ done
 
 echo
 
-#while true; do
-#    echo -n "${GREEN}Enter Password:${RESET} "
-#    read -rs password1
-#    echo
-#    
-#    echo -n "${GREEN}Confirm Password:${RESET} "
-#    read -rs password2
-#    echo
-#
-#    if [ -z "$password1" ]; then
-#        echo "${RED}Password cannot be empty.${RESET}"
-#        continue
-#    fi
-#
-#    if [ "$password1" != "$password2" ]; then
-#        echo "${RED}Passwords do not match. Please try again.${RESET}"
-#        continue
-#    fi
-#
-#    P="$password1"
-#    P="${password1%$'\r'}"
-#    P="${P%$'\n'}"
-#    
-#    echo
-#    echo "${CYAN}Password has been set.${RESET}"
-#    read -rp "${YELLOW}${BOLD}Confirm password is correct? (Y/n): ${RESET}" confirm
-#    echo $P
-#    case "$confirm" in
-#        [Yy]* | "") break ;;
-#        [Nn]*) echo "${BLUE}Retrying${RESET}" ;;
-#        *) echo "${RED}Please answer Y/n.${RESET}" ;;
-#    esac
-#done
+while true; do
+    echo -n "${GREEN}Enter Password:${RESET} "
+    read -rs password1
+    echo
+    
+    echo -n "${GREEN}Confirm Password:${RESET} "
+    read -rs password2
+    echo
+
+    if [ -z "$password1" ]; then
+        echo "${RED}Password cannot be empty.${RESET}"
+        continue
+    fi
+
+    if [ "$password1" != "$password2" ]; then
+        echo "${RED}Passwords do not match. Please try again.${RESET}"
+        continue
+    fi
+
+    P="$password1"
+    P="${password1%$'\r'}"
+    P="${P%$'\n'}"
+    
+    echo
+    echo "${CYAN}Password has been set.${RESET}"
+    read -rp "${YELLOW}${BOLD}Confirm password is correct? (Y/n): ${RESET}" confirm
+    case "$confirm" in
+        [Yy]* | "") break ;;
+        [Nn]*) echo "${BLUE}Retrying${RESET}" ;;
+        *) echo "${RED}Please answer Y/n.${RESET}" ;;
+    esac
+done
 
 while true; do
     read -rp "${GREEN}Enter Display Name - ${RESET}${GREEN}${BOLD}Default: $N:${RESET} " choice
@@ -268,8 +267,7 @@ dbus-send \
 
 echo "${RESET}"
 echo "${GREEN}${BOLD}Success! ${RESET}${BOLD}${CYAN}Leave VT-2 and return to ChromeOS! ${RESET}"
-echo "${YELLOW}The password is: ${BOLD}password${RESET}"
-
+echo
 
 # Drop passwords from env
 password1=""
