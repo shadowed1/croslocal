@@ -253,6 +253,18 @@ do
   grep -qx -- "$f" /etc/chrome_dev.conf 2>/dev/null || echo "$f" >>/etc/chrome_dev.conf
 done
 
+# Drop passwords from env
+
+password1=""
+password2=""
+P=""
+unset password1 password2 P
+
+echo
+echo "${GREEN}${BOLD}Success! Restarting Session... "
+echo
+sleep 1
+
 dbus-send \
   --system \
   --print-reply \
