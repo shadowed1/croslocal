@@ -12,15 +12,15 @@ BOLD=$(tput bold)
 RESET=$(tput sgr0)
 
 if [ "$(whoami)" != "root" ]; then
-    echo "${YELLOW}Please log into VT-2 as ${RESET}${RED}${BOLD}root${RESET}${YELLOW} for this script.${RESET}
+    echo "${YELLOW}Please log into VT-2 as ${RESET}${RED}${BOLD}root${RESET}${YELLOW} for this script.${RESET}"
     sleep 3
     exit 0
 fi
 echo "${BLUE}${BOLD}This script will enable Guest Login for ChromeOS.${RESET}${BOLD}"
-echo "${BLUE}Please enable Debugging Features during setup if you want the local account to be the owner!" ${RESET}"
+echo "${BLUE}Please enable Debugging Features during setup if you want the local account to be the owner! ${RESET}"
 
 while true; do
-    read -rp "${YELLOW}${BOLD}T${RESET}${BOLD} (Y/n): ${RESET}" confirm
+    read -rp "${YELLOW}${BOLD}Proceed with Local Account creation?${RESET}${BOLD} (Y/n): ${RESET}" confirm
     case "$confirm" in
         [Yy]* | "")
             break
@@ -36,17 +36,17 @@ while true; do
     esac
 done
 
-U='username@mustbe.inthisformat'
+U='username@mustbeinthisformat'
 P='password'
 N='display name'
-G='GivenNameOnlyOneWord'
+G='NameOnlyOneWord'
 L='gaia' # DONT CHANGE PLZZZZ
 H="$(cryptohome --action=obfuscate_user --user="$U" 2>/dev/null | tail -1)"
 PY="$(command -v python3 || command -v python)"\
 CH="$(
 
 [ -n "$PY" ] || {
-  dev_install --only_bootstrap"
+  dev_install --only_bootstrap
 }
 
 if [ ! -f /usr/sbin/cryptohome ]; then
