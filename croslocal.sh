@@ -54,26 +54,36 @@ L='gaia' # DO NOT CHANGE
 echo
 
 while true; do
-    read -rp "${GREEN}Enter Username (${CYAN}username@format${RESET}) - ${RESET}${GREEN}${BOLD}Default: $U:${RESET} " choice
+    if ! read -rp "${GREEN}Enter Username (${CYAN}username@format${RESET}) - ${RESET}${GREEN}${BOLD}Default: $U:${RESET} " choice; then
+        echo "${RED}Input error. ${RESET}"
+        sleep 3
+        exit 1
+    fi
+
     if [ -n "$choice" ]; then
-        U="${choice}"
+        U="$choice"
         echo
     fi
 
-    if [[ ! "$U" == *"@"* ]]; then
+    if [[ "$U" != *"@"* ]]; then
         echo "${RED}Error: Username must be in the format 'username@domain'${RESET}"
         continue
     fi
 
     echo "${CYAN}You entered: ${BOLD}$U${RESET}"
     read -rp "${YELLOW}${BOLD}Confirm this username? (Y/n): ${RESET}" confirm
+
     case "$confirm" in
-        [Yy]* | "") 
+        [Yy]*|"")
             H="$(cryptohome --action=obfuscate_user --user="$U" 2>/dev/null | tail -1)"
-            break 
+            break
             ;;
-        [Nn]*) echo "${BLUE}Updating...${RESET}" ;;
-        *) echo "${RED}Please answer Y/n.${RESET}" ;;
+        [Nn]*)
+            echo "${BLUE}Updating...${RESET}"
+            ;;
+        *)
+            echo "${RED}Please answer Y/n.${RESET}"
+            ;;
     esac
 done
 
