@@ -115,7 +115,7 @@ while true; do
     echo
     echo "${CYAN}Password has been set.${RESET}"
     read -rp "${YELLOW}${BOLD}Confirm password is correct? (Y/n): ${RESET}" confirm
-
+    echo $P
     case "$confirm" in
         [Yy]* | "") break ;;
         [Nn]*) echo "${BLUE}Retrying${RESET}" ;;
