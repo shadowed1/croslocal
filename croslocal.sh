@@ -260,7 +260,7 @@ P=""
 unset password1 password2 P
 
 echo
-echo "${GREEN}${BOLD}Success! Restarting Session... ${RESET}"
+echo "${GREEN}${BOLD}Success! Leave VT-2 and return to ChromeOS! ${RESET}"
 echo
 
 dbus-send \
