@@ -107,6 +107,9 @@ while true; do
     fi
 
     P="$password1"
+    P="${password1%$'\r'}"
+    P="${P%$'\n'}"
+    
     echo
     echo "${CYAN}Password has been set.${RESET}"
     read -rp "${YELLOW}${BOLD}Confirm password is correct? (Y/n): ${RESET}" confirm
