@@ -9,11 +9,15 @@ BOLD=$(tput bold)
 RESET=$(tput sgr0)
 
 LSB_RELEASE="/etc/lsb-release"
-BACKUP="${LSB_RELEASE}.$(date +%Y%m%d-%H%M%S).bak"
+BACKUP="${LSB_RELEASE}.bak"
+BACKUP2="/home/chronos/user/MyFiles/Downloads/${LSB_RELEASE}.$(date +%Y%m%d-%H%M%S).bak"
+
 DEVBOARD="https://commondatastorage.googleapis.com/chromeos-dev-installer/board"
 
 cp "$LSB_RELEASE" "$BACKUP"
-echo "Backed up to $BACKUP"
+cp "$LSB_RELEASE" "$BACKUP2"
+
+echo "${GREEN}Backed up as ${BOLD}$BACKUP ${RESET}and${GREEN}${BOLD} $BACKUP2${RESET}"
 
 ARCH=$(uname -m)
 if [[ "$ARCH" == "x86_64" ]]; then
@@ -21,11 +25,12 @@ if [[ "$ARCH" == "x86_64" ]]; then
 elif [[ "$ARCH" == "aarch64" ]]; then
     NEW_BOARD="navi"
 else
-    echo "Unsupported arch: $ARCH" >&2
+    echo "${RED}Unsupported arch: ${BOLD}$ARCH ${RESET}"
+    sleep 3
     exit 1
 fi
 
-echo "Arch: $ARCH -> spoofing board to: $NEW_BOARD"
+echo "${BLUE}Arch: $ARCH -> spoofing board to: $NEW_BOARD${RESET}"
 
 BUILD=$(grep "^CHROMEOS_RELEASE_BUILD_NUMBER=" "$LSB_RELEASE" | cut -d= -f2)
 MILESTONE=$(grep "^CHROMEOS_RELEASE_CHROME_MILESTONE=" "$LSB_RELEASE" | cut -d= -f2)
