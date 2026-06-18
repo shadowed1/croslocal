@@ -15,7 +15,7 @@ cp "$LSB_RELEASE" "$BACKUP"
 cp "$LSB_RELEASE" "$BACKUP2"
 DEVBOARD="https://commondatastorage.googleapis.com/chromeos-dev-installer/board"
 
-echo "${GREEN}Backed up as ${BOLD}$BACKUP ${RESET}and${GREEN}${BOLD} $BACKUP2${RESET}"
+echo "${GREEN}Backed up as ${BOLD}$BACKUP ${RESET}${GREEN}and${BOLD} $BACKUP2${RESET}"
 
 ARCH=$(uname -m)
 if [[ "$ARCH" == "x86_64" ]]; then
