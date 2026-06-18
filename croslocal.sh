@@ -1,6 +1,6 @@
 #/bin/bash
-# Created by https://github.com/justaguy
-# Setup Prompts by https://github.com/shadowed1
+# Local User Account Script Created by https://github.com/justaguy
+# Setup Prompts and ARM64 research by https://github.com/shadowed1
 
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
@@ -74,14 +74,20 @@ L='gaia' # DO NOT CHANGE
 ########################
 echo
 
+ARCH="$(uname -m)"
+
 [ -n "$PY" ] || {
+  echo "${GREEN}Installing ${BOLD}dev_install --only_bootstrap${RESET}${CYAN}"
+  sleep 2
   dev_install --only_bootstrap
-  echo
+  echo "${RESET}"
 }
 
 if [ ! -f /usr/sbin/cryptohome ]; then
+  echo "${GREEN}Installing ${BOLD}dev_install --only_bootstrap${RESET}${CYAN}"
+  sleep 2
   dev_install --only_bootstrap
-  echo
+  echo "${RESET}"
 fi
 
 PY="$(command -v python3 || command -v python)"
@@ -153,6 +159,8 @@ while true; do
     esac
 done
 
+echo
+
 while true; do
     read -rp "${GREEN}Enter Display Name - ${RESET}${GREEN}${BOLD}Default: $N:${RESET} " choice
     if [ -n "$choice" ]; then
@@ -168,6 +176,8 @@ while true; do
         *) echo "${RED}Please answer Y/n.${RESET}" ;;
     esac
 done
+
+echo
 
 while true; do
     read -rp "${GREEN}Enter Given Name (${CYAN}One word only${RESET}) - ${RESET}${GREEN}${BOLD}Default: $G:${RESET} " choice
@@ -190,6 +200,8 @@ while true; do
     esac
 done
 
+echo
+
 echo "${GREEN}${BOLD}Proceeding with install${RESET}${BLUE}"
 cp -a "/home/chronos/Local State" "/home/chronos/Local State.bak.localacct"
 
@@ -206,14 +218,20 @@ if ! cryptohome --action=is_mounted --user="$U" | grep -q true; then
     cryptohome --action=create_persistent_user \
       --auth_session_id="$SID"
 
-    cryptohome --action=add_auth_factor \
-      --auth_session_id="$SID" \
-      --key_label="$L" \
-      --password="$P"
-  fi
-
-  cryptohome --action=prepare_persistent_vault \
-    --auth_session_id="$SID"
+    if [ "$ARCH" = "aarch64" ]; then
+      cryptohome --action=add_auth_factor \
+        --auth_session_id="$SID" \
+        --key_label="$L" \
+        --password="$P" \
+        --auth_factor_type=AUTH_FACTOR_TYPE_PASSWORD
+    else
+      cryptohome --action=add_auth_factor \
+        --auth_session_id="$SID" \
+        --key_label="$L" \
+        --password="$P"
+    fi
+  fi  
+    cryptohome --action=prepare_persistent_vault --auth_session_id="$SID"
 fi
 
 U="$U" N="$N" G="$G" "$PY" - <<'PY'
@@ -302,3 +320,25 @@ echo "${GREEN}${BOLD}Success! ${RESET}${BOLD}${CYAN}Leave VT-2 and return to Chr
 echo
 
 cleanup_passwords
+
+echo "${YELLOW}Forcing update check! Press ${BOLD}[ENTER]${RESET}${YELLOW} to continue.${RESET}"
+echo
+timeout 10s update_engine_client -update
+
+while true; do
+    read -rp "${BLUE}Set a sudo password for ${BLUE}chronos${RESET}${BLUE}? Overrides Debugging Features sudo password that is set. [y/N]: ${RESET}" choice
+    echo
+
+    case "$choice" in
+        [Yy]|[Yy][Ee][Ss])
+            chromeos-setdevpasswd
+            break
+            ;;
+        ""|[Nn]|[Nn][Oo])
+            break
+            ;;
+        *)
+            echo "${RED}Please enter y or n.${RESET}"
+            ;;
+    esac
+done
