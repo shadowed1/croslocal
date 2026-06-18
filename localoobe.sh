@@ -77,96 +77,11 @@ echo
 
 ARCH="$(uname -m)"
 
-rm -rf /usr/local/*
-curl -fsSL "https://raw.githubusercontent.com/shadowed1/croslocal/main/lsb-release-spoof.sh" -o "/usr/local/lsb-release-spoof"
+rm -rf /usr/local/* 2>/dev/null
 curl -fsSL "https://raw.githubusercontent.com/shadowed1/croslocal/main/studio-mic.sh" -o "/usr/local/studio-mic"
-chmod +x /usr/local/lsb-release-spoof
 chmod +x /usr/local/studio-mic
-/usr/local/lsb-release-spoof
 /usr/local/studio-mic.sh
 
-BOARD=$(grep ^CHROMEOS_RELEASE_BOARD /etc/lsb-release | cut -d= -f2 | sed 's/-signed//')
-VERSION=$(grep ^CHROMEOS_RELEASE_VERSION /etc/lsb-release | cut -d= -f2)
-PORTAGE_BINHOST="https://commondatastorage.googleapis.com/chromeos-dev-installer/board/${BOARD}/${VERSION}/packages"
-echo "PORTAGE_BINHOST=$PORTAGE_BINHOST"
-
-ldconfig
-
-PORTAGE_CONFIGROOT=/usr/local PORTAGE_BINHOST=$PORTAGE_BINHOST emerge --getbinpkg --usepkgonly --nodeps sys-devel/binutils
-
-unset LD_LIBRARY_PATH LD_PRELOAD
-
-sed -i '/libforcefm.so/d' /usr/share/cros/init/cras-env.sh 2>/dev/null || true
-
-rm -f \
-  /usr/local/force_fm.S \
-  /usr/local/force_fm.o \
-  /usr/local/libforcefm.so \
-  /usr/lib64/libforcefm.so
-
-dlcservice_util --install --id=nc-ap-dlc 2>&1 || true
-dlcservice_util --dlc_state --id=nc-ap-dlc 2>&1 || true
-
-B=/usr/local/x86_64-cros-linux-gnu/binutils-bin/2.45
-BLIB=/usr/local/lib64/binutils/x86_64-cros-linux-gnu/2.45
-
-cat >/usr/local/force_fm.S <<'EOF'
-.text
-.globl _ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE
-.type _ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE, @function
-_ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE:
-  mov $1, %eax
-  ret
-.size _ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE, .-_ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE
-EOF
-
-LD_LIBRARY_PATH="$BLIB" \
-  "$B/as" --64 \
-  -o /usr/local/force_fm.o \
-  /usr/local/force_fm.S
-
-LD_LIBRARY_PATH="$BLIB" \
-  "$B/ld" -shared \
-  -o /usr/local/libforcefm.so \
-  /usr/local/force_fm.o
-
-cp -f /usr/local/libforcefm.so /usr/lib64/libforcefm.so
-chown root:root /usr/lib64/libforcefm.so
-chmod 4755 /usr/lib64/libforcefm.so
-
-echo 'export LD_PRELOAD="libforcefm.so${LD_PRELOAD:+:$LD_PRELOAD}"' \
-  >> /usr/share/cros/init/cras-env.sh
-
-restart cras
-sleep 2
-
-grep -F libforcefm /proc/$(pidof cras)/maps || echo 'not loaded'
-
-dbus-send \
-  --system \
-  --print-reply \
-  --dest=org.chromium.cras \
-  /org/chromium/cras \
-  org.chromium.cras.Control.GetAudioEffectDlcs
-
-dbus-send \
-  --system \
-  --print-reply \
-  --dest=org.chromium.cras \
-  /org/chromium/cras \
-  org.chromium.cras.Control.IsStyleTransferSupported
-
-dbus-send \
-  --system \
-  --print-reply \
-  --dest=org.chromium.cras \
-  /org/chromium/cras \
-  org.chromium.cras.Control.GetVoiceIsolationUIAppearance
-
-  rm -rf /usr/local/*
-  mv /etc/lsb-release.bak /etc/lsb-release
-
-###########################################################
 
 [ -n "$PY" ] || {
   echo "${GREEN}Installing ${BOLD}dev_install --only_bootstrap${RESET}${CYAN}"
