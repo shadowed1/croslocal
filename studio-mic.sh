@@ -14,7 +14,7 @@ RESET=$(tput sgr0)
 find /usr/local -mindepth 1 \
   \( -type d \( -name '*chard*' -o -name '*ChromeOS_PowerControl*' \) -prune \) -o \
   \( -name '*sudocrosh*' \) -o \
-  -print 2>/dev/null
+  -print >/dev/null 2>&1
 
 LSB_RELEASE="/etc/lsb-release"
 BACKUP="${LSB_RELEASE}.bak"
@@ -187,4 +187,4 @@ dbus-send \
 find /usr/local -mindepth 1 \
   \( -type d \( -name '*chard*' -o -name '*ChromeOS_PowerControl*' \) -prune \) -o \
   \( -name '*sudocrosh*' \) -o \
-  -print 2>/dev/null
+  -print >/dev/null 2>&1
