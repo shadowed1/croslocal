@@ -59,10 +59,12 @@ echo
 
 [ -n "$PY" ] || {
   dev_install --only_bootstrap
+  echo
 }
 
 if [ ! -f /usr/sbin/cryptohome ]; then
   dev_install --only_bootstrap
+  echo
 fi
 
 PY="$(command -v python3 || command -v python)"
@@ -287,3 +289,5 @@ password1=""
 password2=""
 P=""
 unset password1 password2 P
+
+update_engine_client -update &
