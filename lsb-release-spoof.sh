@@ -8,11 +8,10 @@ CYAN=$(tput setaf 6)
 BOLD=$(tput bold)
 RESET=$(tput sgr0)
 
+cp /etc/lsb-release /home/chronos/user/MyFiles/Downloads/ 2>/dev/null
 LSB_RELEASE="/etc/lsb-release"
 BACKUP="${LSB_RELEASE}.bak"
-BACKUP2="${LSB_RELEASE}.$(date +%Y%m%d-%H%M%S).bak"
 cp "$LSB_RELEASE" "$BACKUP"
-cp "$LSB_RELEASE" "$BACKUP2"
 DEVBOARD="https://commondatastorage.googleapis.com/chromeos-dev-installer/board"
 
 echo "${GREEN}Backed up as ${BOLD}$BACKUP ${RESET}${GREEN}and${BOLD} $BACKUP2${RESET}"
