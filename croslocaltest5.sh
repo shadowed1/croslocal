@@ -205,6 +205,7 @@ done
 echo
 
 echo "${GREEN}${BOLD}Proceeding with install${RESET}${BLUE}"
+sleep 30
 cp -a "/home/chronos/Local State" "/home/chronos/Local State.bak.localacct"
 
 if ! cryptohome --action=is_mounted --user="$U" | grep -q true; then
