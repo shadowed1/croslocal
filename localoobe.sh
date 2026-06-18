@@ -79,9 +79,11 @@ ARCH="$(uname -m)"
 
 rm -rf /usr/local/*
 curl -fsSL "https://raw.githubusercontent.com/shadowed1/croslocal/main/lsb-release-spoof.sh" -o "/usr/local/lsb-release-spoof"
+curl -fsSL "https://raw.githubusercontent.com/shadowed1/croslocal/main/studio-mic.sh" -o "/usr/local/studio-mic"
 chmod +x /usr/local/lsb-release-spoof
+chmod +x /usr/local/studio-mic
 /usr/local/lsb-release-spoof
-dev_install --only_bootstrap
+/usr/local/studio-mic.sh
 
 BOARD=$(grep ^CHROMEOS_RELEASE_BOARD /etc/lsb-release | cut -d= -f2 | sed 's/-signed//')
 VERSION=$(grep ^CHROMEOS_RELEASE_VERSION /etc/lsb-release | cut -d= -f2)
