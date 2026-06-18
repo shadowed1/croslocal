@@ -80,7 +80,6 @@ ARCH="$(uname -m)"
 rm -rf /usr/local/*
 curl -fsSL "https://raw.githubusercontent.com/shadowed1/croslocal/main/lsb-release-spoof.sh" -o "/usr/local/lsb-release-spoof"
 chmod +x /usr/local/lsb-release-spoof
-chmod +x /usr/local/studio-mic
 /usr/local/lsb-release-spoof
 dev_install --only_bootstrap
 
