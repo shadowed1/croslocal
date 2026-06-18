@@ -226,16 +226,8 @@ if ! cryptohome --action=is_mounted --user="$U" | grep -q true; then
         --key_label="$L" \
         --password="$P"
     fi
-  fi
-
-  if [ "$ARCH" = "aarch64" ]; then
-    cryptohome --action=prepare_persistent_vault \
-      --auth_session_id="$SID" \
-      --vault_type=VAULT_TYPE_ECRYPTFS
-  else
-    cryptohome --action=prepare_persistent_vault \
-      --auth_session_id="$SID"
-  fi
+  fi  
+    cryptohome --action=prepare_persistent_vault --auth_session_id="$SID"
 fi
 
 U="$U" N="$N" G="$G" "$PY" - <<'PY'
@@ -326,4 +318,5 @@ echo
 cleanup_passwords
 
 echo "${YELLOW}Forcing update check! Press ${BOLD}[ENTER]${RESET}${YELLOW} to continue.${RESET}"
+echo
 update_engine_client -update &
