@@ -12,5 +12,5 @@
 
 <br>
 
-Created by https://github.com/justaguy <br>
-Prompts by https://github.com/shadowed1 <br>
+Local User Account Script created: https://github.com/justaguy <br>
+Setup Prompts and ARM64 research: https://github.com/shadowed1 <br>
