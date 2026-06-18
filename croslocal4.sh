@@ -1,6 +1,6 @@
 #/bin/bash
-# Created by https://github.com/justaguy
-# Setup Prompts by https://github.com/shadowed1
+# Local User Account Script Created by https://github.com/justaguy
+# Setup Prompts and ARM64 research by https://github.com/shadowed1
 
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
@@ -226,15 +226,8 @@ if ! cryptohome --action=is_mounted --user="$U" | grep -q true; then
         --key_label="$L" \
         --password="$P"
     fi
-  fi
-
-  if [ "$ARCH" = "aarch64" ]; then
-    cryptohome --action=prepare_persistent_vault \
-      --auth_session_id="$SID" \
-  else
-    cryptohome --action=prepare_persistent_vault \
-      --auth_session_id="$SID"
-  fi
+  fi  
+    cryptohome --action=prepare_persistent_vault --auth_session_id="$SID"
 fi
 
 U="$U" N="$N" G="$G" "$PY" - <<'PY'
