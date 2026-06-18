@@ -1,6 +1,6 @@
 #/bin/bash
-# Created by https://github.com/justaguy
-# Setup Prompts by https://github.com/shadowed1
+# Local User Account Script Created by https://github.com/justaguy
+# Setup Prompts and ARM64 research by https://github.com/shadowed1
 
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
