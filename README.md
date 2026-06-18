@@ -1,4 +1,5 @@
-## Persistent Local Account for ChromeOS!
+# Persistent Local Account for ChromeOS! <br>
+## Use ChromeOS without an internet connected account! <br>
 
 ### How to Install for ChromeOS:
 
