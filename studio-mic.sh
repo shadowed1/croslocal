@@ -1,6 +1,6 @@
 #!/bin/bash
 # LSB Spoofing by shadowed1
-# Studio Microphone by just a guy
+# Studio Microphone by justaguy
 
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
