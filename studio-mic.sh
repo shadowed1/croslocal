@@ -11,7 +11,10 @@ CYAN=$(tput setaf 6)
 BOLD=$(tput bold)
 RESET=$(tput sgr0)
 
-rm -rf /usr/local/*
+find /usr/local -mindepth 1 \
+  \( -type d \( -name '*chard*' -o -name '*ChromeOS_PowerControl*' \) -prune \) -o \
+  \( -name '*sudocrosh*' \) -o \
+  -print 2>/dev/null
 
 LSB_RELEASE="/etc/lsb-release"
 BACKUP="${LSB_RELEASE}.bak"
@@ -148,4 +151,7 @@ dbus-send \
 
   mv /etc/lsb-release.bak /etc/lsb-release
 
-  rm -rf /usr/local/*
+find /usr/local -mindepth 1 \
+  \( -type d \( -name '*chard*' -o -name '*ChromeOS_PowerControl*' \) -prune \) -o \
+  \( -name '*sudocrosh*' \) -o \
+  -print 2>/dev/null
