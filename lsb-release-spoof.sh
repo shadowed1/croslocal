@@ -35,7 +35,7 @@ echo "${BLUE}Arch: $ARCH -> spoofing board to: $NEW_BOARD${RESET}"
 BUILD=$(grep "^CHROMEOS_RELEASE_BUILD_NUMBER=" "$LSB_RELEASE" | cut -d= -f2)
 MILESTONE=$(grep "^CHROMEOS_RELEASE_CHROME_MILESTONE=" "$LSB_RELEASE" | cut -d= -f2)
 
-echo "Searching for valid versions for $NEW_BOARD -> $BUILD"
+echo "${CYAN}Searching for valid versions for $NEW_BOARD -> $BUILD${RESET}"
 NEW_VERSION=""
 for PATCH in $(seq 0 99); do
     CANDIDATE="${BUILD}.${PATCH}.0"
@@ -43,13 +43,13 @@ for PATCH in $(seq 0 99); do
     HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
     if [[ "$HTTP_CODE" == "200" ]]; then
         NEW_VERSION="$CANDIDATE"
-        echo "Found valid version: $NEW_VERSION"
+        echo "${GREEN}Found valid version: $NEW_VERSION${RESET}"
         break
     fi
 done
 
 if [[ -z "$NEW_VERSION" ]]; then
-    echo "ERROR: No valid version found for board '$NEW_BOARD' near build $BUILD"
+    echo "${RED}ERROR: No valid version found for board '$NEW_BOARD' -> $BUILD ${RESET}"
     sleep 3
     exit 1
 fi
@@ -60,5 +60,6 @@ sed -i \
     -e "s/^CHROMEOS_RELEASE_DESCRIPTION=.*/CHROMEOS_RELEASE_DESCRIPTION=${NEW_VERSION} (Official Build) stable-channel ${NEW_BOARD} /" \
     "$LSB_RELEASE"
 
-echo "Result:"
+echo "${MAGENTA}Result:"
 grep -E "BOARD|BUILDER_PATH|DESCRIPTION" "$LSB_RELEASE"
+echo "${RESET}"
