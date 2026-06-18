@@ -74,6 +74,8 @@ L='gaia' # DO NOT CHANGE
 ########################
 echo
 
+ARCH="$(uname -m)"
+
 [ -n "$PY" ] || {
   dev_install --only_bootstrap
   echo
@@ -206,14 +208,29 @@ if ! cryptohome --action=is_mounted --user="$U" | grep -q true; then
     cryptohome --action=create_persistent_user \
       --auth_session_id="$SID"
 
-    cryptohome --action=add_auth_factor \
-      --auth_session_id="$SID" \
-      --key_label="$L" \
-      --password="$P"
+    if [ "$ARCH" = "aarch64" ]; then
+      cryptohome --action=add_auth_factor \
+        --auth_session_id="$SID" \
+        --key_label="$L" \
+        --password="$P" \
+        --auth_factor_type=AUTH_FACTOR_TYPE_PASSWORD \
+        --use_tpm=false
+    else
+      cryptohome --action=add_auth_factor \
+        --auth_session_id="$SID" \
+        --key_label="$L" \
+        --password="$P"
+    fi
   fi
 
-  cryptohome --action=prepare_persistent_vault \
-    --auth_session_id="$SID"
+  if [ "$ARCH" = "aarch64" ]; then
+    cryptohome --action=prepare_persistent_vault \
+      --auth_session_id="$SID" \
+      --vault_type=VAULT_TYPE_ECRYPTFS
+  else
+    cryptohome --action=prepare_persistent_vault \
+      --auth_session_id="$SID"
+  fi
 fi
 
 U="$U" N="$N" G="$G" "$PY" - <<'PY'
@@ -296,10 +313,11 @@ dbus-send \
   array:string:"--login-user=$U","--login-profile=$H","--oobe-skip-postlogin","--disable-gaia-services","--skip-force-online-signin-for-testing","--allow-failed-policy-fetch-for-test" \
   array:string:
 
+echo "${MAGENTA}Forcing update check..."
+update_engine_client -update &
 echo
 echo "${RESET}"
 echo "${GREEN}${BOLD}Success! ${RESET}${BOLD}${CYAN}Leave VT-2 and return to ChromeOS! ${RESET}"
 echo
 
 cleanup_passwords
-update_engine_client -update &
