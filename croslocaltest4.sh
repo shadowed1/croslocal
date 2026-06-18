@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 # Local User Account Script Created by https://github.com/justaguy
 # Setup Prompts and ARM64 research by https://github.com/shadowed1
 
@@ -17,7 +17,7 @@ if [ "$(whoami)" != "root" ]; then
     exit 0
 fi
 
-exec < /dev/tty 
+exec < /dev/tty
 
 echo
 echo "${BLUE}${BOLD}This script will enable Guest Login for ChromeOS.${RESET}${BOLD}"
@@ -117,9 +117,9 @@ while true; do
     echo "${CYAN}You entered: ${BOLD}$U${RESET}"
     read -rp "${YELLOW}${BOLD}Confirm this username? (Y/n): ${RESET}" confirm
     case "$confirm" in
-        [Yy]* | "") 
+        [Yy]* | "")
             H="$(cryptohome --action=obfuscate_user --user="$U" 2>/dev/null | tail -1)"
-            break 
+            break
             ;;
         [Nn]*) echo "${BLUE}Updating...${RESET}" ;;
         *) echo "${RED}Please answer Y/n.${RESET}" ;;
@@ -132,7 +132,7 @@ while true; do
     echo -n "${GREEN}Enter Password:${RESET} "
     read -rs password1
     echo
-    
+
     echo -n "${GREEN}Confirm Password:${RESET} "
     read -rs password2
     echo
@@ -150,7 +150,7 @@ while true; do
     P="$password1"
     P="${password1%$'\r'}"
     P="${P%$'\n'}"
-    
+
     echo
     echo "${CYAN}Password has been set.${RESET}"
     read -rp "${YELLOW}${BOLD}Confirm password is correct? (Y/n): ${RESET}" confirm
@@ -232,8 +232,8 @@ if ! cryptohome --action=is_mounted --user="$U" | grep -q true; then
         --key_label="$L" \
         --password="$P"
     fi
-  fi  
-    cryptohome --action=prepare_persistent_vault --auth_session_id="$SID"
+  fi
+  cryptohome --action=prepare_persistent_vault --auth_session_id="$SID"
 fi
 
 U="$U" N="$N" G="$G" "$PY" - <<'PY'
@@ -262,6 +262,7 @@ if entry is None:
 
 entry.update({
     'email': user,
+    'gaia_id': '',
     'profile_requires_policy': False,
     'using_saml': False,
     'using_saml_principals_api': False,
@@ -282,6 +283,9 @@ data.setdefault('UserDisplayEmail', {})[user] = user
 data.setdefault('UserForceOnlineSignin', {})[user] = False
 data.setdefault('OAuthTokenStatus', {})[user] = 1
 data.setdefault('UserType', {})[user] = 0
+data.setdefault('ReauthRequired', {})[user] = False
+data.setdefault('ProfileRequiresPolicy', {})[user] = False
+data.setdefault('SyncDisabledWithPolicyCause', {})[user] = 0
 
 data['LastActiveUser'] = user
 data['LastLoggedInRegularUser'] = user
@@ -299,7 +303,9 @@ cp -a /etc/chrome_dev.conf /etc/chrome_dev.conf.bak.localacct 2>/dev/null || tru
 for f in \
   --disable-gaia-services \
   --skip-force-online-signin-for-testing \
-  --allow-failed-policy-fetch-for-test
+  --allow-failed-policy-fetch-for-test \
+  --disable-device-policy-forced-reauth \
+  --noerrdialogs
 do
   grep -qx -- "$f" /etc/chrome_dev.conf 2>/dev/null || echo "$f" >>/etc/chrome_dev.conf
 done
@@ -313,7 +319,7 @@ dbus-send \
   /org/chromium/SessionManager \
   org.chromium.SessionManagerInterface.EnableChromeTesting \
   boolean:true \
-  array:string:"--login-user=$U","--login-profile=$H","--oobe-skip-postlogin","--disable-gaia-services","--skip-force-online-signin-for-testing","--allow-failed-policy-fetch-for-test" \
+  array:string:"--login-user=$U","--login-profile=$H","--oobe-skip-postlogin","--disable-gaia-services","--skip-force-online-signin-for-testing","--allow-failed-policy-fetch-for-test","--skip-reauth-challenge-for-testing","--oobe-config-file=/dev/null","--noerrdialogs" \
   array:string:
 
 echo
@@ -327,20 +333,20 @@ echo "${YELLOW}Forcing update check! Press ${BOLD}[ENTER]${RESET}${YELLOW} to co
 echo
 timeout 10s update_engine_client -update
 
-#while true; do
-#    read -rp "${BLUE}Set a sudo password for ${BLUE}chronos${RESET}${BLUE}? Overrides Debugging Features sudo password that is set. [y/N]: ${RESET}" choice
-#    echo
-#
-#    case "$choice" in
-#        [Yy]|[Yy][Ee][Ss])
-#            chromeos-setdevpasswd
-#            break
-#            ;;
-#        ""|[Nn]|[Nn][Oo])
-#            break
-#            ;;
-#        *)
-#            echo "${RED}Please enter y or n.${RESET}"
-#            ;;
-#    esac
-#done
+while true; do
+    read -rp "${BLUE}Set a sudo password for ${BLUE}chronos${RESET}${BLUE}? Overrides Debugging Features sudo password that is set. [y/N]: ${RESET}" choice
+    echo
+
+    case "$choice" in
+        [Yy]|[Yy][Ee][Ss])
+            chromeos-setdevpasswd
+            break
+            ;;
+        ""|[Nn]|[Nn][Oo])
+            break
+            ;;
+        *)
+            echo "${RED}Please enter y or n.${RESET}"
+            ;;
+    esac
+done
