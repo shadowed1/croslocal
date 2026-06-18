@@ -93,8 +93,41 @@ rm -f \
 dlcservice_util --install --id=nc-ap-dlc 2>&1 || true
 dlcservice_util --dlc_state --id=nc-ap-dlc 2>&1 || true
 
-B=/usr/local/x86_64-cros-linux-gnu/binutils-bin/2.45
-BLIB=/usr/local/lib64/binutils/x86_64-cros-linux-gnu/2.45
+ARCH=$(uname -m)
+
+case "${ARCH}" in
+    aarch64)
+        TARGET="aarch64-cros-linux-gnu"
+        ;;
+    x86_64)
+        TARGET="x86_64-cros-linux-gnu"
+        ;;
+    *)
+        echo "${RED}Unsupported architecture: ${ARCH}${RESET}"
+        sleep 3
+        exit 1
+        ;;
+esac
+
+BINUTILS_VERSION=$(
+    find "/usr/local/${TARGET}/binutils-bin" -mindepth 1 -maxdepth 1 -type d \
+    | sed 's#.*/##' \
+    | sort -V \
+    | tail -n1
+)
+
+if [ -z "${BINUTILS_VERSION}" ]; then
+    echo "Unable to determine binutils version for ${TARGET}" >&2
+    exit 1
+fi
+
+B="/usr/local/${TARGET}/binutils-bin/${BINUTILS_VERSION}"
+
+if [ "${ARCH}" = "x86_64" ]; then
+    BLIB="/usr/local/lib64/binutils/${TARGET}/${BINUTILS_VERSION}"
+else
+    BLIB="/usr/local/lib/binutils/${TARGET}/${BINUTILS_VERSION}"
+fi
 
 cat >/usr/local/force_fm.S <<'EOF'
 .text
