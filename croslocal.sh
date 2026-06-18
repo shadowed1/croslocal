@@ -220,7 +220,6 @@ if ! cryptohome --action=is_mounted --user="$U" | grep -q true; then
         --key_label="$L" \
         --password="$P" \
         --auth_factor_type=AUTH_FACTOR_TYPE_PASSWORD \
-        #--use_tpm=false
     else
       cryptohome --action=add_auth_factor \
         --auth_session_id="$SID" \
