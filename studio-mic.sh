@@ -29,7 +29,7 @@ ARCH=$(uname -m)
 if [[ "$ARCH" == "x86_64" ]]; then
     NEW_BOARD="octopus"
 elif [[ "$ARCH" == "aarch64" ]]; then
-    NEW_BOARD="navi"
+    NEW_BOARD="rauru"
 else
     echo "${RED}Unsupported arch: ${BOLD}$ARCH ${RESET}"
     sleep 3
