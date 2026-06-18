@@ -25,6 +25,23 @@ echo
 echo "${BLUE}Please enable Debugging Features during setup if you want the local account to be the owner! ${RESET}"
 echo
 
+cleanup_passwords() {
+    password1=""
+    password2=""
+    P=""
+
+    unset password1 password2 P
+}
+
+cancelled() {
+    cleanup_passwords
+    echo
+    echo "${RED}Cancelled. ${RESET}"
+    exit 130
+}
+
+trap cancelled INT
+
 while true; do
     read -rp "${YELLOW}${BOLD}Proceed with Local Account creation?${RESET}${BOLD} (Y/n): ${RESET}" confirm
     case "$confirm" in
@@ -284,10 +301,5 @@ echo "${RESET}"
 echo "${GREEN}${BOLD}Success! ${RESET}${BOLD}${CYAN}Leave VT-2 and return to ChromeOS! ${RESET}"
 echo
 
-# Drop passwords from env
-password1=""
-password2=""
-P=""
-unset password1 password2 P
-
+cleanup_passwords
 update_engine_client -update &
