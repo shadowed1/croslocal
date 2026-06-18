@@ -64,7 +64,7 @@ echo "${MAGENTA}Result:"
 grep -E "BOARD|BUILDER_PATH|DESCRIPTION" "$LSB_RELEASE"
 echo "${RESET}"
 
-dev_install --only_bootstrap
+dev_install
 
 BOARD=$(grep ^CHROMEOS_RELEASE_BOARD /etc/lsb-release | cut -d= -f2 | sed 's/-signed//')
 VERSION=$(grep ^CHROMEOS_RELEASE_VERSION /etc/lsb-release | cut -d= -f2)
