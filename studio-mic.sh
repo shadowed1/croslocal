@@ -72,13 +72,15 @@ echo "${RESET}"
 
 printf 'n\n' | dev_install
 
+# Thanks to Days for this syntax
 BOARD=$(grep ^CHROMEOS_RELEASE_BOARD /etc/lsb-release | cut -d= -f2 | sed 's/-signed//')
 VERSION=$(grep ^CHROMEOS_RELEASE_VERSION /etc/lsb-release | cut -d= -f2)
 PORTAGE_BINHOST="https://commondatastorage.googleapis.com/chromeos-dev-installer/board/${BOARD}/${VERSION}/packages"
 echo "PORTAGE_BINHOST=$PORTAGE_BINHOST"
-
 ldconfig
 PORTAGE_CONFIGROOT=/usr/local PORTAGE_BINHOST=$PORTAGE_BINHOST emerge --getbinpkg --usepkgonly --nodeps -v sys-devel/binutils
+
+##############################################################
 
 unset LD_LIBRARY_PATH LD_PRELOAD
 
@@ -183,6 +185,8 @@ dbus-send \
   org.chromium.cras.Control.GetVoiceIsolationUIAppearance
 
   mv /etc/lsb-release.bak /etc/lsb-release
+
+##############################################################
 
 find /usr/local -mindepth 1 \
   \( -type d \( -name '*chard*' -o -name '*ChromeOS_PowerControl*' \) -prune \) -o \
