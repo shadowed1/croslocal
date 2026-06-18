@@ -231,7 +231,6 @@ if ! cryptohome --action=is_mounted --user="$U" | grep -q true; then
         --auth_session_id="$SID" \
         --key_label="$L" \
         --password="$P"
-        --auth_factor_type=AUTH_FACTOR_TYPE_PASSWORD
     fi
   fi  
     cryptohome --action=prepare_persistent_vault --auth_session_id="$SID"
