@@ -1,6 +1,6 @@
 #/bin/bash
-# Local User Account Script Created by https://github.com/justaguy
-# Setup Prompts and ARM64 research by https://github.com/shadowed1
+# Created by https://github.com/justaguy
+# Setup Prompts by https://github.com/shadowed1
 
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
@@ -77,17 +77,13 @@ echo
 ARCH="$(uname -m)"
 
 [ -n "$PY" ] || {
-  echo "${GREEN}Installing ${BOLD}dev_install --only_bootstrap${RESET}${CYAN}"
-  sleep 2
   dev_install --only_bootstrap
-  echo "${RESET}"
+  echo
 }
 
 if [ ! -f /usr/sbin/cryptohome ]; then
-  echo "${GREEN}Installing ${BOLD}dev_install --only_bootstrap${RESET}${CYAN}"
-  sleep 2
   dev_install --only_bootstrap
-  echo "${RESET}"
+  echo
 fi
 
 PY="$(command -v python3 || command -v python)"
@@ -230,8 +226,16 @@ if ! cryptohome --action=is_mounted --user="$U" | grep -q true; then
         --key_label="$L" \
         --password="$P"
     fi
-  fi  
-    cryptohome --action=prepare_persistent_vault --auth_session_id="$SID"
+  fi
+
+  if [ "$ARCH" = "aarch64" ]; then
+    cryptohome --action=prepare_persistent_vault \
+      --auth_session_id="$SID" \
+      --vault_type=VAULT_TYPE_ECRYPTFS
+  else
+    cryptohome --action=prepare_persistent_vault \
+      --auth_session_id="$SID"
+  fi
 fi
 
 U="$U" N="$N" G="$G" "$PY" - <<'PY'
@@ -314,31 +318,11 @@ dbus-send \
   array:string:"--login-user=$U","--login-profile=$H","--oobe-skip-postlogin","--disable-gaia-services","--skip-force-online-signin-for-testing","--allow-failed-policy-fetch-for-test" \
   array:string:
 
+echo "${MAGENTA}Forcing update check..."
+update_engine_client -update &
 echo
 echo "${RESET}"
 echo "${GREEN}${BOLD}Success! ${RESET}${BOLD}${CYAN}Leave VT-2 and return to ChromeOS! ${RESET}"
 echo
 
 cleanup_passwords
-
-echo "${YELLOW}Forcing update check! Press ${BOLD}[ENTER]${RESET}${YELLOW} to continue.${RESET}"
-echo
-timeout 10s update_engine_client -update
-
-while true; do
-    read -rp "${BLUE}Set a sudo password for ${BLUE}chronos${RESET}${BLUE}? Overrides Debugging Features sudo password that is set. [y/N]: ${RESET}" choice
-    echo
-
-    case "$choice" in
-        [Yy]|[Yy][Ee][Ss])
-            chromeos-setdevpasswd
-            break
-            ;;
-        ""|[Nn]|[Nn][Oo])
-            break
-            ;;
-        *)
-            echo "${RED}Please enter y or n.${RESET}"
-            ;;
-    esac
-done
