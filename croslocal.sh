@@ -155,6 +155,8 @@ while true; do
     esac
 done
 
+echo
+
 while true; do
     read -rp "${GREEN}Enter Display Name - ${RESET}${GREEN}${BOLD}Default: $N:${RESET} " choice
     if [ -n "$choice" ]; then
@@ -170,6 +172,8 @@ while true; do
         *) echo "${RED}Please answer Y/n.${RESET}" ;;
     esac
 done
+
+echo
 
 while true; do
     read -rp "${GREEN}Enter Given Name (${CYAN}One word only${RESET}) - ${RESET}${GREEN}${BOLD}Default: $G:${RESET} " choice
@@ -191,6 +195,8 @@ while true; do
         *) echo "${RED}Please answer Y/n.${RESET}" ;;
     esac
 done
+
+echo
 
 echo "${GREEN}${BOLD}Proceeding with install${RESET}${BLUE}"
 cp -a "/home/chronos/Local State" "/home/chronos/Local State.bak.localacct"
