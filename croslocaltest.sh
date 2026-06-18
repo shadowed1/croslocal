@@ -79,12 +79,14 @@ ARCH="$(uname -m)"
 [ -n "$PY" ] || {
   echo "${GREEN}Installing ${BOLD}dev_install --only_bootstrap${RESET}${CYAN}"
   sleep 2
+  echo
   dev_install --only_bootstrap
   echo "${RESET}"
 }
 
 if [ ! -f /usr/sbin/cryptohome ]; then
   echo "${GREEN}Installing ${BOLD}dev_install --only_bootstrap${RESET}${CYAN}"
+  echo
   sleep 2
   dev_install --only_bootstrap
   echo "${RESET}"
