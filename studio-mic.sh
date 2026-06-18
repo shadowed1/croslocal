@@ -142,3 +142,7 @@ dbus-send \
   --dest=org.chromium.cras \
   /org/chromium/cras \
   org.chromium.cras.Control.GetVoiceIsolationUIAppearance
+
+  mv /etc/lsb-release.bak /etc/lsb-release
+
+  rm -rf /usr/local/*
