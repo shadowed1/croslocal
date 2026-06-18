@@ -77,13 +77,17 @@ echo
 ARCH="$(uname -m)"
 
 [ -n "$PY" ] || {
+  echo "${GREEN}Installing ${BOLD}dev_install --only_bootstrap${RESET}${CYAN}"
+  sleep 2
   dev_install --only_bootstrap
-  echo
+  echo "${RESET}"
 }
 
 if [ ! -f /usr/sbin/cryptohome ]; then
+  echo "${GREEN}Installing ${BOLD}dev_install --only_bootstrap${RESET}${CYAN}"
+  sleep 2
   dev_install --only_bootstrap
-  echo
+  echo "${RESET}"
 fi
 
 PY="$(command -v python3 || command -v python)"
