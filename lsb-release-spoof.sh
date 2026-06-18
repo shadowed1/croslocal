@@ -1,5 +1,4 @@
 #!/bin/bash
-
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
 YELLOW=$(tput setaf 3)
@@ -10,11 +9,11 @@ BOLD=$(tput bold)
 RESET=$(tput sgr0)
 
 LSB_RELEASE="/etc/lsb-release"
-BACKUP="${LSB_RELEASE}.bak"
+BACKUP="${LSB_RELEASE}.$(date +%Y%m%d-%H%M%S).bak"
+DEVBOARD="https://commondatastorage.googleapis.com/chromeos-dev-installer/board"
 
 cp "$LSB_RELEASE" "$BACKUP"
-echo "${GREEN}Backed up to ${BOLD}$BACKUP${RESET}"
-sleep 1
+echo "Backed up to $BACKUP"
 
 ARCH=$(uname -m)
 if [[ "$ARCH" == "x86_64" ]]; then
@@ -22,20 +21,39 @@ if [[ "$ARCH" == "x86_64" ]]; then
 elif [[ "$ARCH" == "aarch64" ]]; then
     NEW_BOARD="navi"
 else
-    echo "${RED}Unsupported arch: ${BOLD}$ARCH${RESET}"
+    echo "Unsupported arch: $ARCH" >&2
+    exit 1
+fi
+
+echo "Arch: $ARCH -> spoofing board to: $NEW_BOARD"
+
+BUILD=$(grep "^CHROMEOS_RELEASE_BUILD_NUMBER=" "$LSB_RELEASE" | cut -d= -f2)
+MILESTONE=$(grep "^CHROMEOS_RELEASE_CHROME_MILESTONE=" "$LSB_RELEASE" | cut -d= -f2)
+
+echo "Searching for valid versions for $NEW_BOARD -> $BUILD"
+NEW_VERSION=""
+for PATCH in $(seq 0 99); do
+    CANDIDATE="${BUILD}.${PATCH}.0"
+    URL="${DEVBOARD}/${NEW_BOARD}/${CANDIDATE}/packages/Packages"
+    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+    if [[ "$HTTP_CODE" == "200" ]]; then
+        NEW_VERSION="$CANDIDATE"
+        echo "Found valid version: $NEW_VERSION"
+        break
+    fi
+done
+
+if [[ -z "$NEW_VERSION" ]]; then
+    echo "ERROR: No valid version found for board '$NEW_BOARD' near build $BUILD"
     sleep 3
     exit 1
 fi
 
-echo "${CYAN}Arch: ${BOLD}$ARCH${RESET}${CYAN} -> spoofing board to: ${BOLD}$NEW_BOARD${RESET}"
-sleep 1
-
 sed -i \
     -e "s/^CHROMEOS_RELEASE_BOARD=.*/CHROMEOS_RELEASE_BOARD=${NEW_BOARD}/" \
-    -e "s/^CHROMEOS_RELEASE_BUILDER_PATH=.*/CHROMEOS_RELEASE_BUILDER_PATH=${NEW_BOARD}-release\/R148-16640.61.0/" \
-    -e "s/^CHROMEOS_RELEASE_DESCRIPTION=.*/CHROMEOS_RELEASE_DESCRIPTION=16640.61.0 (Official Build) stable-channel ${NEW_BOARD} /" \
+    -e "s/^CHROMEOS_RELEASE_BUILDER_PATH=.*/CHROMEOS_RELEASE_BUILDER_PATH=${NEW_BOARD}-release\/R${MILESTONE}-${NEW_VERSION}/" \
+    -e "s/^CHROMEOS_RELEASE_DESCRIPTION=.*/CHROMEOS_RELEASE_DESCRIPTION=${NEW_VERSION} (Official Build) stable-channel ${NEW_BOARD} /" \
     "$LSB_RELEASE"
 
-echo "${MAGENTA}/etc/lsb-release ${BOLD}"
-cat $LSB_RELEASE
-echo "${RESET}"
+echo "Result:"
+grep -E "BOARD|BUILDER_PATH|DESCRIPTION" "$LSB_RELEASE"
