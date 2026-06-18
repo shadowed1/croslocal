@@ -323,4 +323,22 @@ cleanup_passwords
 
 echo "${YELLOW}Forcing update check! Press ${BOLD}[ENTER]${RESET}${YELLOW} to continue.${RESET}"
 echo
-update_engine_client -update &
+timeout 10s update_engine_client -update
+
+while true; do
+    read -rp "${BLUE}Set a sudo password for ${BLUE}chronos${RESET}${BLUE}? Overrides Debugging Features sudo password that is set. [y/N]: ${RESET}" choice
+    echo
+
+    case "$choice" in
+        [Yy]|[Yy][Ee][Ss])
+            chromeos-setdevpasswd
+            break
+            ;;
+        ""|[Nn]|[Nn][Oo])
+            break
+            ;;
+        *)
+            echo "${RED}Please enter y or n.${RESET}"
+            ;;
+    esac
+done
