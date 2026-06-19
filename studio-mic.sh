@@ -14,7 +14,7 @@ RESET=$(tput sgr0)
 find /usr/local -mindepth 1 -depth \
   ! \( \
       -path '*/chard*' -o \
-      -path '*/ChromeOS_PowerControl*' -o \
+      -path '*/bin/ChromeOS_PowerControl*' -o \
       -path '*/sudocrosh*' \
     \) \
   -exec rm -rf {} +
@@ -229,7 +229,7 @@ dbus-send \
 find /usr/local -mindepth 1 -depth \
   ! \( \
       -path '*/chard*' -o \
-      -path '*/ChromeOS_PowerControl*' -o \
+      -path '*/bin/ChromeOS_PowerControl*' -o \
       -path '*/sudocrosh*' \
     \) \
   -exec rm -rf {} +
