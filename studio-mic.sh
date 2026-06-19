@@ -11,10 +11,13 @@ CYAN=$(tput setaf 6)
 BOLD=$(tput bold)
 RESET=$(tput sgr0)
 
-find /usr/local -mindepth 1 \
-  \( -type d \( -name '*chard*' -o -name '*ChromeOS_PowerControl*' \) -prune \) -o \
-  \( -name '*sudocrosh*' \) -o \
-  -print >/dev/null 2>&1
+find /usr/local -mindepth 1 -depth \
+  ! \( \
+      -path '*/chard*' -o \
+      -path '*/ChromeOS_PowerControl*' -o \
+      -path '*/sudocrosh*' \
+    \) \
+  -exec rm -rf {} +
 
 LSB_RELEASE="/etc/lsb-release"
 BACKUP="${LSB_RELEASE}.bak"
@@ -29,7 +32,7 @@ ARCH=$(uname -m)
 if [[ "$ARCH" == "x86_64" ]]; then
     NEW_BOARD="octopus"
 elif [[ "$ARCH" == "aarch64" ]]; then
-    NEW_BOARD="cherry"
+    NEW_BOARD="trogdor"
 else
     echo "${RED}Unsupported arch: ${BOLD}$ARCH ${RESET}"
     sleep 3
@@ -131,15 +134,36 @@ else
     BLIB="/usr/local/lib/binutils/${TARGET}/${BINUTILS_VERSION}"
 fi
 
-cat >/usr/local/force_fm.S <<'EOF'
+if [ "${ARCH}" = "x86_64" ]; then
+    cat >/usr/local/force_fm.S <<'EOF'
 .text
 .globl _ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE
 .type _ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE, @function
 _ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE:
-  mov $1, %eax
-  ret
+    mov $1, %eax
+    ret
 .size _ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE, .-_ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE
 EOF
+    LD_LIBRARY_PATH="$BLIB" "$B/as" --64 \
+        -o /usr/local/force_fm.o /usr/local/force_fm.S
+    LD_LIBRARY_PATH="$BLIB" "$B/ld" -shared \
+        -o /usr/local/libforcefm.so /usr/local/force_fm.o
+
+else
+    cat >/usr/local/force_fm.S <<'EOF'
+.text
+.globl _ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE
+.type _ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE, @function
+_ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE:
+    mov  w0, #1
+    ret
+.size _ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE, .-_ZN12segmentation17FeatureManagement16IsFeatureEnabledERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEE
+EOF
+    LD_LIBRARY_PATH="$BLIB" "$B/as" \
+        -o /usr/local/force_fm.o /usr/local/force_fm.S
+    LD_LIBRARY_PATH="$BLIB" "$B/ld" -shared \
+        -o /usr/local/libforcefm.so /usr/local/force_fm.o
+fi
 
 LD_LIBRARY_PATH="$BLIB" \
   "$B/as" --64 \
@@ -188,7 +212,10 @@ dbus-send \
 
 ##############################################################
 
-find /usr/local -mindepth 1 \
-  \( -type d \( -name '*chard*' -o -name '*ChromeOS_PowerControl*' \) -prune \) -o \
-  \( -name '*sudocrosh*' \) -o \
-  -print >/dev/null 2>&1
+find /usr/local -mindepth 1 -depth \
+  ! \( \
+      -path '*/chard*' -o \
+      -path '*/ChromeOS_PowerControl*' -o \
+      -path '*/sudocrosh*' \
+    \) \
+  -exec rm -rf {} +
