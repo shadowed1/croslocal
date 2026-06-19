@@ -326,7 +326,7 @@ echo
 timeout 5s update_engine_client -update
 
 while true; do
-    read -rp "${BOLD}${BLUE}Set a sudo password for ${BLUE}chronos${RESET}${BLUE}? Overrides Debugging Features sudo password that is set. [y/N]: ${RESET}" choice
+    read -rp "${BOLD}${BLUE}Set a sudo password for ${BLUE}chronos${RESET}${BLUE}? Overrides Debugging Features sudo password that is set. [Y/n]: ${RESET}" choice
     echo
 
     case "$choice" in
@@ -338,7 +338,7 @@ while true; do
             break
             ;;
         *)
-            echo "${RED}Please enter y or n.${RESET}"
+            echo "${RED}Please enter Y or N.${RESET}"
             ;;
     esac
 done
