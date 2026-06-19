@@ -1,5 +1,5 @@
 #!/bin/bash
-# LSB Spoofing by shadowed1
+# LSB Spoofing by and ARM64 support by shadowed1
 # Studio Microphone by justaguy
 
 RED=$(tput setaf 1)
@@ -32,7 +32,7 @@ ARCH=$(uname -m)
 if [[ "$ARCH" == "x86_64" ]]; then
     NEW_BOARD="octopus"
 elif [[ "$ARCH" == "aarch64" ]]; then
-    NEW_BOARD="trogdor"
+    NEW_BOARD="jacuzzi"
 else
     echo "${RED}Unsupported arch: ${BOLD}$ARCH ${RESET}"
     sleep 3
@@ -69,7 +69,7 @@ sed -i \
     -e "s/^CHROMEOS_RELEASE_DESCRIPTION=.*/CHROMEOS_RELEASE_DESCRIPTION=${NEW_VERSION} (Official Build) stable-channel ${NEW_BOARD} /" \
     "$LSB_RELEASE"
 
-echo "${MAGENTA}Result:"
+echo "${MAGENTA}"
 grep -E "BOARD|BUILDER_PATH|DESCRIPTION" "$LSB_RELEASE"
 echo "${RESET}"
 
@@ -132,6 +132,18 @@ if [ "${ARCH}" = "x86_64" ]; then
     BLIB="/usr/local/lib64/binutils/${TARGET}/${BINUTILS_VERSION}"
 else
     BLIB="/usr/local/lib/binutils/${TARGET}/${BINUTILS_VERSION}"
+fi
+
+if [ ! -d "$BLIB" ]; then
+    BLIB=$(find /usr/local/lib64 /usr/local/lib \
+        -path '*/debug*' -prune -o \
+        -path "*/binutils/${TARGET}/${BINUTILS_VERSION}" \
+        -type d -print 2>/dev/null | head -1)
+    if [ -z "$BLIB" ]; then
+        echo "Cannot find binutils lib dir for ${TARGET}/${BINUTILS_VERSION}" >&2
+        exit 1
+    fi
+    echo "Auto-detected BLIB: $BLIB"
 fi
 
 if [ "${ARCH}" = "x86_64" ]; then
