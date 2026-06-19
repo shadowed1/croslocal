@@ -177,15 +177,17 @@ EOF
         -o /usr/local/libforcefm.so /usr/local/force_fm.o
 fi
 
-LD_LIBRARY_PATH="$BLIB" \
-  "$B/as" --64 \
-  -o /usr/local/force_fm.o \
-  /usr/local/force_fm.S
-
-LD_LIBRARY_PATH="$BLIB" \
-  "$B/ld" -shared \
-  -o /usr/local/libforcefm.so \
-  /usr/local/force_fm.o
+if [ "$(uname -m)" = "x86_64" ]; then
+    LD_LIBRARY_PATH="$BLIB" \
+    "$B/as" --64 \
+        -o /usr/local/force_fm.o \
+        /usr/local/force_fm.S
+else
+    LD_LIBRARY_PATH="$BLIB" \
+    "$B/as" \
+        -o /usr/local/force_fm.o \
+        /usr/local/force_fm.S
+fi
 
 cp -f /usr/local/libforcefm.so /usr/lib64/libforcefm.so
 chown root:root /usr/lib64/libforcefm.so
